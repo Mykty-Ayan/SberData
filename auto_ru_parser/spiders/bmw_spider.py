@@ -3,12 +3,14 @@ import scrapy
 
 class BmwSpider(scrapy.Spider):
     name = 'bmw_spider'
+    page_number = 2
 
     start_urls = [
-        'https://auto.ru/moskva/cars/bmw/used/'
+        'https://auto.ru/moskva/cars/bmw/used/?page=1'
     ]
 
     def parse(self, response, **kwargs):
+        last_page = int(response.css('a.ListingPagination-module__page span.Button__text::text').getall()[-1])
         # Iterating through all cars list
         for car in response.css('div.ListingItem-module__main'):
             # get particular car detailed view link
@@ -18,10 +20,9 @@ class BmwSpider(scrapy.Spider):
                 details_page = response.urljoin(details_page)
                 yield scrapy.Request(details_page, callback=self.parse_attributes)
 
-        next_page = response.css('a.ListingPagination-module__next::attr(href)').get()
-
-        if next_page is not None:
-            next_page = response.urljoin(next_page)
+        next_page = f'https://auto.ru/moskva/cars/bmw/used/?page={self.page_number}'
+        if self.page_number <= last_page:
+            self.page_number += 1
             yield scrapy.Request(next_page, callback=self.parse)
 
     def parse_attributes(self, response):
