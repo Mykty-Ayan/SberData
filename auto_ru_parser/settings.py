@@ -28,7 +28,7 @@ CONCURRENT_REQUESTS = 5
 # See also autothrottle settings and docs
 
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
+#CONCURRENT_REQUESTS_PER_DOMAIN ['ru', 'by', 'kz'] = 16
 # CONCURRENT_REQUESTS_PER_IP = 16
 
 PROXY_POOL_FILTER_CODE = ['ru', 'by', 'kz']
